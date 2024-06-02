@@ -1,0 +1,9 @@
+Flask==2.0.3
+boto3==1.34.117
+openai==0.12.0
+PyMuPDF==1.18.19
+requests==2.26.0
+gunicorn==20.1.0  # For deploying the Flask app on a production server
+python-dotenv==0.19.2  # For managing environment variables
+langchain_chroma
+langchainhub
