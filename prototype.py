@@ -12,6 +12,7 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from langchain.schema import HumanMessage, AIMessage
 
 os.environ["OPENAI_API_KEY"] = "sk-proj-Xivkve2M61eZ5JFApFaoT3BlbkFJLApMnH3bAr9DeP0Ff4t0"
 
@@ -32,41 +33,46 @@ vectorstore = Chroma.from_documents(documents=splits, embedding=OpenAIEmbeddings
 # Retrieve and generate using the relevant snippets of the PDFs.
 retriever = vectorstore.as_retriever()
 
-template = """
-You are an AI assistant trained to provide detailed and informative answers to questions from the user(John Doe) about Disney Corporation and the company's records on John Doe and their policies handbook. Use the following retrieved information to answer the question thoroughly. If the context doesn't contain enough information to answer the question, indicate that more information is needed.
+def generate_prompt(chat_history, question):
+    context = retriever.get_relevant_documents(question)
+    formatted_context = "\n".join([doc.page_content for doc in context])
 
-Question: {question}
+    chat_history_str = "\n".join([f"John Doe: {q.content}\nAI Assistant: {a.content}" for q, a in chat_history])
+
+    template = f"""
+You are an AI assistant trained to provide detailed and informative answers to questions from John Doe about Disney Corporation and the company's records on John Doe. Use the following retrieved information and the previous chat history to answer the question thoroughly. If the context doesn't contain enough information to answer the question, indicate that more information is needed.
+
+Chat History:
+{chat_history_str}
+
+Current Question: {question}
 
 Context:
-{context}
+{formatted_context}
 
 Answer:
 """
 
-prompt = PromptTemplate(
-    input_variables=["context", "question"],
-    template=template
-)
+    return HumanMessage(content=template)
 
 llm = ChatOpenAI(model="gpt-4o")
-
-rag_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=retriever,
-    chain_type_kwargs={"prompt": prompt}
-)
 
 print("Welcome to the Disney Corporation Information Retrieval System!")
 print("You can ask questions about Disney Corporation and John Doe's records.")
 print("Type 'exit' to quit the program.")
 
+chat_history = []
+
 while True:
     query = input("\nEnter your question: ")
-    
+
     if query.lower() == 'exit':
         print("Thank you for using the Disney Corporation Information Retrieval System. Goodbye!")
         break
-    
-    response = rag_chain.run(query)
-    print("\nAnswer:", response)
+
+    prompt = generate_prompt(chat_history, query)
+    response = llm([prompt])
+
+    print("\nAnswer:", response.content)
+
+    chat_history.append((HumanMessage(content=query), AIMessage(content=response.content)))
