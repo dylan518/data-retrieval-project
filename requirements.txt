@@ -8,3 +8,4 @@ langchain_chroma
 langchainhub
 langchain
 langchain-community
+pypdf
