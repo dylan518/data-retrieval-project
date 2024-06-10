@@ -7,3 +7,4 @@ python-dotenv==0.19.2  # For managing environment variables
 langchain_chroma
 langchainhub
 langchain
+langchain-community
