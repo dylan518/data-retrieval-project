@@ -5,7 +5,7 @@ import '../style.scss';
 function App() {
   const [chatHistory, setChatHistory] = useState([]);
   const fetchChatHistory = () => {
-    axios.get('/get_chat')
+    axios.get('http://127.0.0.1:5000/get_chat')
       .then((response) => {
         setChatHistory(response.data.chat_history);
       })
@@ -27,7 +27,7 @@ function App() {
   const sendQuery = () => {
     const query = document.getElementById('query-input').value.trim();
     if (query !== '') {
-      axios.post('/query', { query })
+      axios.post('http://127.0.0.1:5000/query', { query })
         .then((response) => {
           displayMessage('user', query);
           displayMessage('assistant', response.data.response);
@@ -40,7 +40,7 @@ function App() {
   };
 
   const clearChat = () => {
-    axios.post('/clear_chat')
+    axios.post('http://127.0.0.1:5000/clear_chat')
       .then(() => {
         setChatHistory([]);
       })
@@ -55,7 +55,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
 
-    axios.post('/upload', formData)
+    axios.post('http://127.0.0.1:5000/upload', formData)
       .then((response) => {
         console.log(response.data);
       })

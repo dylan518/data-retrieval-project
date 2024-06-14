@@ -11,12 +11,15 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from langchain.schema import HumanMessage, AIMessage
+from flask_cors import CORS
+
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
 os.environ["OPENAI_API_KEY"] = "sk-proj-Xivkve2M61eZ5JFApFaoT3BlbkFJLApMnH3bAr9DeP0Ff4t0"
 
 app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173", "allow_headers": "Content-Type"}})
 
 # Configure the upload directory
 UPLOAD_FOLDER = 'data_sources'
