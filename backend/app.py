@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, request, render_template
+from flask import Flask, request, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 from langchain import hub
 from langchain_chroma import Chroma
@@ -16,16 +16,13 @@ logging.basicConfig(level=logging.DEBUG)
 
 os.environ["OPENAI_API_KEY"] = "sk-proj-Xivkve2M61eZ5JFApFaoT3BlbkFJLApMnH3bAr9DeP0Ff4t0"
 
-app = Flask(__name__)
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
 
 # Configure the upload directory
 UPLOAD_FOLDER = 'data_sources'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-
-# Load, chunk and index the contents of the PDFs in the /data_sources folder.
-
+# Load, chunk, and index the contents of the PDFs in the /data_sources folder.
 pdf_files = [file for file in os.listdir(UPLOAD_FOLDER) if file.endswith(".pdf")]
 
 docs = []
@@ -101,8 +98,6 @@ def get_chat():
 
     return jsonify({"chat_history": chat_data})
 
-
-
 # Allowed file extensions
 ALLOWED_EXTENSIONS = {'pdf'}
 
@@ -128,7 +123,7 @@ def upload_file():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return app.send_static_file('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

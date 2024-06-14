@@ -8,15 +8,15 @@ function sendQuery() {
             },
             body: JSON.stringify({ query: query })
         })
-        .then(response => response.json())
-        .then(data => {
-            displayMessage('user', query);
-            displayMessage('assistant', data.response);
-            document.getElementById('query-input').value = '';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                displayMessage('user', query);
+                displayMessage('assistant', data.response);
+                document.getElementById('query-input').value = '';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 }
 
@@ -24,13 +24,13 @@ function clearChat() {
     fetch('/clear_chat', {
         method: 'POST'
     })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById('chat-history').innerHTML = '';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('chat-history').innerHTML = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 function uploadFile() {
@@ -43,14 +43,14 @@ function uploadFile() {
         method: 'POST',
         body: formData
     })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.message);
-        fileInput.value = '';
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            fileInput.value = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 }
 
 function displayMessage(role, content) {

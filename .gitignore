@@ -25,6 +25,7 @@ htmlcov/
 .mypy_cache/
 .pytest_cache/
 *.log
+.vite
 
 # Node.js
 #########
